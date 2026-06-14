@@ -1,0 +1,11 @@
+{
+  "name": "saas-metrics-calculator",
+  "version": "1.0.0",
+  "description": "SaaS Metrics Calculator - Track and visualize key SaaS metrics",
+  "scripts": {
+    "deploy": "npx wrangler pages deploy public --project-name saas-metrics-calculator"
+  },
+  "keywords": ["saas", "metrics", "calculator", "mrr", "arr"],
+  "author": "",
+  "license": "ISC"
+}

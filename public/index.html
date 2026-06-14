@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Metrics Calculator | Track Your Key Metrics</title>
+    <meta name="description" content="Calculate your SaaS metrics with SaaS Metrics Calculator. Free tool for MRR, ARR, churn rate, LTV, CAC, and more. Visual dashboard with benchmark comparisons.">
+    <meta name="keywords" content="SaaS metrics calculator, MRR calculator, ARR calculator, churn rate calculator, LTV calculator, SaaS analytics, startup metrics">
+    <meta name="author" content="SaaS Metrics Calculator">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="SaaS Metrics Calculator - Calculate MRR, Churn, LTV">
+    <meta property="og:description" content="Calculate your SaaS metrics. Free tool for MRR, ARR, churn rate, LTV, CAC, and more.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://saas-metrics-calculator.pages.dev">
+    <meta property="og:image" content="https://saas-metrics-calculator.pages.dev/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SaaS Metrics Calculator - Calculate MRR, Churn, LTV">
+    <meta name="twitter:description" content="Calculate your SaaS metrics. Free tool for MRR, ARR, churn rate, LTV.">
+    <link rel="canonical" href="https://saas-metrics-calculator.pages.dev">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><span class="logo-icon">📊</span> SaaS Metrics</h1>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="calculator">Calculator</button>
+                <button class="nav-btn" data-tab="dashboard">Dashboard</button>
+                <button class="nav-btn" data-tab="scenarios">What-If</button>
+                <button class="nav-btn" data-tab="cohort">Cohorts</button>
+                <button class="nav-btn" data-tab="history">History</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main container">
+        <!-- Calculator Tab -->
+        <section id="calculator" class="tab-content active">
+            <div class="grid-2">
+                <div class="card input-card">
+                    <h2 class="card-title">Input Metrics</h2>
+                    <div class="input-group">
+                        <label for="mrr">Monthly Recurring Revenue (MRR)</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">$</span>
+                            <input type="number" id="mrr" placeholder="50000" min="0" step="100">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="activeUsers">Active Users</label>
+                        <input type="number" id="activeUsers" placeholder="1000" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="churnRate">Monthly Churn Rate (%)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="churnRate" placeholder="5" min="0" max="100" step="0.1">
+                            <span class="input-suffix">%</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="cac">Customer Acquisition Cost (CAC)</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">$</span>
+                            <input type="number" id="cac" placeholder="500" min="0" step="10">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="ltv">Customer Lifetime Value (LTV)</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">$</span>
+                            <input type="number" id="ltv" placeholder="2000" min="0" step="10">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="arpu">Average Revenue Per User (ARPU)</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">$</span>
+                            <input type="number" id="arpu" placeholder="50" min="0" step="1">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="growthRate">Monthly Growth Rate (%)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="growthRate" placeholder="10" min="0" max="100" step="0.1">
+                            <span class="input-suffix">%</span>
+                        </div>
+                    </div>
+                    <div class="input-actions">
+                        <button id="calculateBtn" class="btn btn-primary">Calculate Metrics</button>
+                        <button id="saveBtn" class="btn btn-secondary">Save Snapshot</button>
+                    </div>
+                </div>
+
+                <div class="results-card">
+                    <h2 class="card-title">Calculated Metrics</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">ARR</div>
+                            <div class="metric-value" id="arr">—</div>
+                            <div class="metric-benchmark" id="arrBenchmark"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Monthly Churn</div>
+                            <div class="metric-value" id="churnValue">—</div>
+                            <div class="metric-benchmark" id="churnBenchmark"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">LTV/CAC Ratio</div>
+                            <div class="metric-value" id="ltvCac">—</div>
+                            <div class="metric-benchmark" id="ltvCacBenchmark"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Payback Period</div>
+                            <div class="metric-value" id="payback">—</div>
+                            <div class="metric-benchmark" id="paybackBenchmark"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Rule of 40</div>
+                            <div class="metric-value" id="rule40">—</div>
+                            <div class="metric-benchmark" id="rule40Benchmark"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">LTV</div>
+                            <div class="metric-value" id="ltvCalc">—</div>
+                            <div class="metric-benchmark" id="ltvBenchmark"></div>
+                        </div>
+                    </div>
+                    <div class="export-actions">
+                        <button id="exportPdf" class="btn btn-outline">Export PDF Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card ad-placeholder">
+                <div class="ad-content">
+                    <span class="ad-label">Advertisement</span>
+                    <div class="ad-slot" id="adsense-placeholder">
+                        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8007430228126096" crossorigin="anonymous"></script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Tab -->
+        <section id="dashboard" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2 class="card-title">MRR & ARR Growth</h2>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">Metric Breakdown</h2>
+                    <canvas id="breakdownChart"></canvas>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <h2 class="card-title">Growth Projections</h2>
+                    <canvas id="projectionChart"></canvas>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">LTV vs CAC</h2>
+                    <canvas id="ltvCacChart"></canvas>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">Churn Impact</h2>
+                    <canvas id="churnChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- What-If Scenarios Tab -->
+        <section id="scenarios" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2 class="card-title">Scenario Builder</h2>
+                    <p class="card-desc">Adjust inputs to see how changes affect your metrics</p>
+                    <div class="input-group">
+                        <label>Growth Rate Change (%)</label>
+                        <input type="range" id="scenarioGrowth" min="-50" max="100" value="0" class="slider">
+                        <span class="slider-value" id="scenarioGrowthVal">0%</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Churn Change (%)</label>
+                        <input type="range" id="scenarioChurn" min="-50" max="100" value="0" class="slider">
+                        <span class="slider-value" id="scenarioChurnVal">0%</span>
+                    </div>
+                    <div class="input-group">
+                        <label>ARPU Change (%)</label>
+                        <input type="range" id="scenarioARPU" min="-50" max="100" value="0" class="slider">
+                        <span class="slider-value" id="scenarioARPUVal">0%</span>
+                    </div>
+                    <button id="runScenario" class="btn btn-primary">Run Scenario</button>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">Scenario Results</h2>
+                    <div id="scenarioResults" class="scenario-results">
+                        <p class="placeholder-text">Adjust the sliders and click "Run Scenario" to see projected metrics</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">12-Month Projection</h2>
+                <canvas id="scenarioChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Cohort Analysis Tab -->
+        <section id="cohort" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Cohort Retention Analysis</h2>
+                <p class="card-desc">Visualize how customer cohorts retain over time</p>
+                <div class="cohort-inputs">
+                    <div class="input-group">
+                        <label>Number of Cohorts</label>
+                        <input type="number" id="cohortCount" value="6" min="1" max="12">
+                    </div>
+                    <div class="input-group">
+                        <label>Initial Users per Cohort</label>
+                        <input type="number" id="cohortUsers" value="100" min="10">
+                    </div>
+                    <button id="generateCohorts" class="btn btn-primary">Generate Cohorts</button>
+                </div>
+                <div class="cohort-table-wrapper">
+                    <table id="cohortTable" class="cohort-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title">Cohort Visualization</h2>
+                <canvas id="cohortChart"></canvas>
+            </div>
+        </section>
+
+        <!-- History Tab -->
+        <section id="history" class="tab-content">
+            <div class="card">
+                <div class="card-header-row">
+                    <h2 class="card-title">Saved Calculations</h2>
+                    <button id="clearHistory" class="btn btn-danger btn-sm">Clear All</button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <p class="placeholder-text">No saved calculations yet. Save a snapshot from the Calculator tab.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>SaaS Metrics Calculator — Free tool for SaaS founders and operators</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
